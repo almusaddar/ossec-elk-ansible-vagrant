@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # VM pour OSSSEC SERVER
     config.vm.define "ossecserver" do |ossecserver|
         ossecserver.vm.box = "nrel/CentOS-6.5-x86_64"
-        ossecserver.vm.network "private_network", ip: "192.168.33.100"
+        ossecserver.vm.network "private_network", ip: "192.168.33.111"
         ossecserver.vm.provision "shell", inline: <<-SHELL
             sudo iptables --flush 
             sudo chkconfig iptables off  
@@ -133,7 +133,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.define "provisioner" do |provisioner|
         provisioner.vm.box = "hashicorp/precise64"
         provisioner.vm.network "private_network", ip: "192.168.33.10" 
-        provisioner.vm.provision "file", source: "../../ossec-ansible/", destination: "~/ossec-ansible"
+        provisioner.vm.provision "file", source: "../../ossec-elk-ansible-vagrant/", destination: "~/ossec-ansible"
         provisioner.vm.provision "shell", inline: <<-SHELL
         	sudo apt-get update && sudo apt-get upgrade
         	sudo apt-get -y install git python-pip sshpass 
