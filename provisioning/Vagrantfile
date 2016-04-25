@@ -26,11 +26,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
     end
 
-    # VM  agent linux CentOS
-    config.vm.define "agent1" do |agent1|
-        agent1.vm.box = "nrel/CentOS-6.5-x86_64"
-        agent1.vm.network "private_network", ip: "10.10.1.101"
-        agent1.vm.provision "shell", inline: <<-SHELL
+    # VM  client1 linux CentOS
+    config.vm.define "client1" do |client1|
+        client1.vm.box = "nrel/CentOS-6.5-x86_64"
+        client1.vm.network "private_network", ip: "10.10.1.101"
+        client1.vm.provision "shell", inline: <<-SHELL
             #sudo iptables --flush
             #sudo chkconfig iptables off
             sudo service iptables save
@@ -40,50 +40,50 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 
         # VirtualBox.
-        agent1.vm.provider :virtualbox do |virtualbox|
+        client1.vm.provider :virtualbox do |virtualbox|
             virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "agent1"]
+            virtualbox.customize ["modifyvm", :id, "--name", "client1"]
             virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
         end
     end
 
-    # VM pour agent linux Ubuntu
-    config.vm.define "agent2" do |agent2|
-        agent2.vm.box = "hashicorp/precise64"
-        agent2.vm.network "private_network", ip: "10.10.1.102"
-        agent2.vm.provision "shell", inline: <<-SHELL
+    # VM  client2 linux Ubuntu
+    config.vm.define "client2" do |client2|
+        client2.vm.box = "hashicorp/precise64"
+        client2.vm.network "private_network", ip: "10.10.1.102"
+        client2.vm.provision "shell", inline: <<-SHELL
             sudo apt-get -y install apache2
         SHELL
 
         # VirtualBox.
-        agent2.vm.provider :virtualbox do |virtualbox|
+        client2.vm.provider :virtualbox do |virtualbox|
             virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "agent2"]
+            virtualbox.customize ["modifyvm", :id, "--name", "client2"]
             virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
         end
     end
 
-    # VM pour agent Windows
-    config.vm.define "agent3" do |agent3|
-        agent3.vm.box = "williamtsoi/windows_10"
-        agent3.vm.network "private_network", ip: "10.10.1.103"
+    # VM  client3 Windows
+    config.vm.define "client3" do |client3|
+        client3.vm.box = "williamtsoi/windows_10"
+        client3.vm.network "private_network", ip: "10.10.1.103"
 
         # VirtualBox.
-        agent3.vm.provider :virtualbox do |virtualbox|
+        client3.vm.provider :virtualbox do |virtualbox|
             virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "agent3"]
+            virtualbox.customize ["modifyvm", :id, "--name", "client3"]
             virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
         end
     end
 
-	config.vm.define "provisioner" do |provisioner|
-        provisioner.vm.box = "hashicorp/precise64"
-        provisioner.vm.network "private_network", ip: "10.10.1.9"
-        provisioner.vm.provision "file", source: "../../ossec-elk-ansible-vagrant/", destination: "~/ossec-ansible"
-        provisioner.vm.provision "shell", inline: <<-SHELL
+	config.vm.define "ansibleserver" do |ansibleserver|
+        ansibleserver.vm.box = "hashicorp/precise64"
+        ansibleserver.vm.network "private_network", ip: "10.10.1.9"
+        ansibleserver.vm.provision "file", source: "../../ossec-elk-ansible-vagrant/", destination: "~/ossec-ansible"
+        ansibleserver.vm.provision "shell", inline: <<-SHELL
         	sudo apt-get update && sudo apt-get upgrade
         	sudo apt-get -y install git python-pip sshpass
         	sudo pip install xmltodict pywinrm markupsafe ansible
@@ -91,10 +91,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         SHELL
 
         # VirtualBox.
-        provisioner.vm.provider :virtualbox do |virtualbox|
+        ansibleserver.vm.provider :virtualbox do |virtualbox|
             virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "provisioner"]
+            virtualbox.customize ["modifyvm", :id, "--name", "ansibleserver"]
             virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
         end
     end
