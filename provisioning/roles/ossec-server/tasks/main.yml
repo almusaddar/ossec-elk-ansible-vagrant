@@ -1,5 +1,6 @@
 ---
 - include: dep_install.yml
+# - include: java.yml
 - include: ossec.yml
 - include: elasticsearch.yml
 - include: kibana.yml

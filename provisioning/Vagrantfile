@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # VM  OSSSEC SERVER
     config.vm.define "ossecserver" do |ossecserver|
         ossecserver.vm.box = "nrel/CentOS-6.5-x86_64"
-        ossecserver.vm.network "private_network", ip: "10.10.1.10"
+        ossecserver.vm.network "private_network", ip: "172.16.1.10"
         ossecserver.vm.provision "shell", inline: <<-SHELL
             #sudo iptables --flush
             #sudo chkconfig iptables off
@@ -17,85 +17,86 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             sudo chkconfig iptables off
         SHELL
 
-        # VirtualBox.
-        ossecserver.vm.provider :virtualbox do |virtualbox|
-            virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "ossecserver"]
-            virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        end
+        # # VirtualBox.
+        # ossecserver.vm.provider :virtualbox do |virtualbox|
+        #     virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        # #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
+        #     virtualbox.customize ["modifyvm", :id, "--name", "ossecserver"]
+        #     virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
+        # end
     end
 
-    # VM  client1 linux CentOS
-    config.vm.define "client1" do |client1|
-        client1.vm.box = "nrel/CentOS-6.5-x86_64"
-        client1.vm.network "private_network", ip: "10.10.1.101"
-        client1.vm.provision "shell", inline: <<-SHELL
-            #sudo iptables --flush
-            #sudo chkconfig iptables off
-            sudo service iptables save
-            sudo service iptables stop
-            sudo chkconfig iptables off
-        SHELL
-
-
-        # VirtualBox.
-        client1.vm.provider :virtualbox do |virtualbox|
-            virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "client1"]
-            virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        end
-    end
+    # # VM  client1 linux CentOS
+    # config.vm.define "client1" do |client1|
+    #     client1.vm.box = "nrel/CentOS-6.5-x86_64"
+    #     client1.vm.network "private_network", ip: "172.16.1.101"
+    #     client1.vm.provision "shell", inline: <<-SHELL
+    #         #sudo iptables --flush
+    #         #sudo chkconfig iptables off
+    #         sudo service iptables save
+    #         sudo service iptables stop
+    #         sudo chkconfig iptables off
+    #     SHELL
+    #
+    #
+    #     # VirtualBox.
+    #     client1.vm.provider :virtualbox do |virtualbox|
+    #         virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    #     #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
+    #         virtualbox.customize ["modifyvm", :id, "--name", "client1"]
+    #         virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
+    #     end
+    # end
 
     # VM  client2 linux Ubuntu
     config.vm.define "client2" do |client2|
         client2.vm.box = "hashicorp/precise64"
-        client2.vm.network "private_network", ip: "10.10.1.102"
+        client2.vm.network "private_network", ip: "172.16.1.102"
         client2.vm.provision "shell", inline: <<-SHELL
             sudo apt-get -y install apache2
         SHELL
 
-        # VirtualBox.
-        client2.vm.provider :virtualbox do |virtualbox|
-            virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "client2"]
-            virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        end
+        # # VirtualBox.
+        # client2.vm.provider :virtualbox do |virtualbox|
+        #     virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        # #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
+        #     virtualbox.customize ["modifyvm", :id, "--name", "client2"]
+        #     virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
+        # end
     end
 
-    # VM  client3 Windows
-    config.vm.define "client3" do |client3|
-        client3.vm.box = "williamtsoi/windows_10"
-        client3.vm.network "private_network", ip: "10.10.1.103"
-
-        # VirtualBox.
-        client3.vm.provider :virtualbox do |virtualbox|
-            virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "client3"]
-            virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        end
-    end
+    # # VM  client3 Windows
+    # config.vm.define "client3" do |client3|
+    #     client3.vm.box = "williamtsoi/windows_10"
+    #     client3.vm.network "private_network", ip: "172.16.1.103"
+    #
+    #     # VirtualBox.
+    #     client3.vm.provider :virtualbox do |virtualbox|
+    #         virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    #     #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
+    #         virtualbox.customize ["modifyvm", :id, "--name", "client3"]
+    #         virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
+    #     end
+    # end
 
 	config.vm.define "ansibleserver" do |ansibleserver|
         ansibleserver.vm.box = "hashicorp/precise64"
-        ansibleserver.vm.network "private_network", ip: "10.10.1.9"
+        ansibleserver.vm.network "private_network", ip: "172.16.1.9"
         ansibleserver.vm.provision "file", source: "../../ossec-elk-ansible-vagrant/", destination: "~/ossec-ansible"
         ansibleserver.vm.provision "shell", inline: <<-SHELL
         	sudo apt-get update && sudo apt-get upgrade
-        	sudo apt-get -y install git python-pip sshpass
+        	sudo apt-get -y install git python-pip sshpass --force-yes
         	sudo pip install xmltodict pywinrm markupsafe ansible
-        	cd ossec-ansible/provisioning && ansible-playbook -i hosts_vagrant playbook_vagrant.yml
+        	cd ossec-ansible/provisioning
+          ansible-playbook -i hosts_vagrant playbook_vagrant.yml -vvvv
         SHELL
 
-        # VirtualBox.
-        ansibleserver.vm.provider :virtualbox do |virtualbox|
-            virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
-            virtualbox.customize ["modifyvm", :id, "--name", "ansibleserver"]
-            virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        end
+        # # VirtualBox.
+        # ansibleserver.vm.provider :virtualbox do |virtualbox|
+        #     virtualbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        # #    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
+        #     virtualbox.customize ["modifyvm", :id, "--name", "ansibleserver"]
+        #     virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
+        # end
     end
 end
